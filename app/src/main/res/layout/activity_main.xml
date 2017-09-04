@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:gravity="center"
+    tools:context="com.example.wangj.recognitionbyname.MainActivity">
+
+    <TextView
+        android:id="@+id/filename_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RecognitionByName.txt"
+        />
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startRecognitionByName"
+        android:background="#FF6371BA"
+        android:text="Start"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="\n filename     :        recogniton type \n _____________________________________________"
+        />
+    <TextView
+        android:id="@+id/filename_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="506dp"
+        android:layout_weight="0.07"
+        android:maxLines="50"
+        android:scrollbars="vertical"
+        android:text="\n\nclick start button to recognition!"
+        android:textIsSelectable="true"
+        android:textSize="50px"/>
+
+</LinearLayout>
