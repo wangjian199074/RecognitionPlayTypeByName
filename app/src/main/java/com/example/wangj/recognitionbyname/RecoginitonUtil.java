@@ -224,9 +224,7 @@ public class RecoginitonUtil {
         if (fileName.contains("3dh") || (fileName+"_").matches(".*[^a-z^A-Z]LR[^a-z^A-Z].*")
                 || fileName.contains("SBS") || fileName.contains("HSBS")) {
             type.setMode(mlr);
-        }
-
-        if(fileName.matches(".+Left.{0,1}Right.+") || fileName.matches(".+Side.{0,1}By.{0,1}Side.+")
+        } else if(fileName.matches(".+Left.{0,1}Right.+") || fileName.matches(".+Side.{0,1}By.{0,1}Side.+")
                 || fileName.matches(".+Half.{0,1}Side.{0,1}By.{0,1}Side.+")) {
             type.setMode(mlr);
         }
@@ -234,27 +232,40 @@ public class RecoginitonUtil {
         if (fileName.contains("3dv") || (fileName+"_").matches(".*[^a-z^A-Z]TB[^a-z^A-Z].*")
                 || (fileName+"_").contains(".*[^a-z^A-Z]OU[^a-z^A-Z].*")
                 || (fileName+"_").contains(".*[^a-z^A-Z]HOU[^a-z^A-Z].*")) {
-            type.setMode(mtb);
-        }
-        if (fileName.matches(".+Top.{0,1}Bottom.+") || fileName.matches(".+Over.{0,1}Under.+")
+            if (type.getMode() == mlr) {
+                type.setMode(-1);
+            } else {
+                type.setMode(mtb);
+            }
+        } else if (fileName.matches(".+Top.{0,1}Bottom.+") || fileName.matches(".+Over.{0,1}Under.+")
                 || fileName.matches(".+Half.{0,1}Over.{0,1}Under.+")) {
-            type.setMode(mtb);
+            if (type.getMode() == mlr) {
+                type.setMode(-1);
+            } else {
+                type.setMode(mtb);
+            }
         }
 
         if (fileName.contains("180x180") || fileName.contains("180°")) {
             type.setView(v180);
-        }
-        if (fileName.contains("180")
+        } else if (fileName.contains("180")
                 && (fileName.contains("VR") || fileName.matches(".+Virtual.{0,1}Reality.+"))) {
             type.setView(v180);
         }
 
         if (fileName.contains("360°")) {
-            type.setView(v360);
-        }
-        if(fileName.contains("360")
+            if (type.getView() == v180) {
+                type.setView(-1);
+            } else {
+                type.setView(v360);
+            }
+        } else if (fileName.contains("360")
                 && (fileName.contains("VR") || fileName.matches(".+Virtual.{0,1}Reality.+"))) {
-            type.setView(v360);
+            if (type.getView() == v180) {
+                type.setView(-1);
+            } else {
+                type.setView(v360);
+            }
         }
         return type;
     }
