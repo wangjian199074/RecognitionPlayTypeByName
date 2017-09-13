@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by wangj on 2017/9/4.
@@ -32,13 +33,13 @@ public class RecoginitonUtil {
     static final int vScreen = 2;
     static final String sAddSymbol = ".{0,1}";
 
-    static final String sTopBottom360Brand = "vrtm, VRST, VRAT, 3DSVR, CRVR, KVR, MIVR, onvr, WPVR, SKHVR, DPVR, PRVR, adn, afes, aph, arm, bana, blit, ctrb, den, dpki, endo, hind, lot, mc, mlky, mnks, ofks, opg, osl, pri, SAMTK, taik, tami, tgi, tma, wow, VRHush";
-    static final String sLeftRight180Brand = "Naughty+America, VPD, Virtual+Porn+Desire, vrporncom, PRW, prw, MilfVR, SexBabesVR, RealityPussy.com, SLR, VitualRealPorn.com, VRSmash, TmwVRnet.com, nam, czechvr, wankz+vr, BaDoink+VR, Virtual+Real+Porn, real+teens+vr, virtual+real+trans, Eudol+VR, TeensMegaWorldVR, Kink+VR";
-    static final String sTopBottom180Brand = "StockingsVR";
-    static final String s2D360Brand = "VRB, VRBangers";
+    static final String sTopBottom360Brand = "vrtm, vrst, vrat, 3dsvr, crvr, kvr, mivr, onvr, wpvr, skhvr, dpvr, prvr, adn, afes, aph, arm, bana, blit, ctrb, den, dpki, endo, hind, lot, mc, mlky, mnks, ofks, opg, osl, pri, samtk, taik, tami, tgi, tma, wow, vrhush";
+    static final String sLeftRight180Brand = "naughty+america, vpd, virtual+porn+desire, vrporncom, prw, prw, milfvr, sexbabesvr, realitypussy.com, slr, vitualrealporn.com, vrsmash, tmwvrnet.com, nam, czechvr, wankz+vr, badoink+vr, virtual+real+porn, real+teens+vr, virtual+real+trans, eudol+vr, teensmegaworldvr, kink+vr";
+    static final String sTopBottom180Brand = "stockingsvr";
+    static final String s2D360Brand = "vrb, vrbangers";
 
-    static final String sTopBottom360FileName = "Evolution of Verse, Invasion!, Invasion Baobab, Rainbow Crow, Asteroids!, Asteroids Baobab, Step to the Line, Giant, Shigeto, The Protectors walk in the ranger shoes, The possible, Under Neon Lights, Kinoscope VR, Notes on Blindness, OneRepublic Kids, Mr. Robot, Valen Reef, Walking New York, The Click Effect, Clouds Over Sidra, A History of Cuban Dance, Within Ted2016 VR Montage, Squarepusher Stor Eiglass, The Displaced VR, Waves of Grace, The Voodoo Healer, Take Flight VR, The Source VR, My Mother’s Wing, SNL 40 - Seinfeld Q&A, Virtual Giving Trip, Smile More: The Journey of a Song, Vice News VR, New Wave VR, Cold Lairs, Kaa Jungle, through Mowgli eyes, Trust in me, King Kong helicopter crash, Pete dragon 360, Rogue One Recon";
-    static final String s2D360FileName = "Dear Angelica, Rain and Shine, Planet of the Couches, Buggy Night, On Ice, Special Delivery, Dreams of Dalí, Henry VR, Henry Oculus, Lost VR, Lost Oculus, Google Spotlight Story, Google Pearl, Google Help, Hunting of the Fallen VR, The JFK Assassination VR, Scuba Diving 360 Green Island Taiwan, The RooM VR horror, Angel Falls 360, Chrysalis HP, Rally 360, Ships Factions New Eden, Virtually Inside Tanks, Elephants on the Brink, From Pencil to Metal, Japan Changing Grow Old, 360 Autzen Player Experience, Grand Canyon VR, Grand Canyon 360, Experience Blue Angels 360";
+    static final String sTopBottom360FileName = "evolution of verse, invasion!, invasion baobab, rainbow crow, asteroids!, asteroids baobab, step to the line, giant, shigeto, the protectors walk in the ranger shoes, the possible, under neon lights, kinoscope vr, notes on blindness, onerepublic kids, mr. robot, valen reef, walking new york, the click effect, clouds over sidra, a history of cuban dance, within ted2016 vr montage, squarepusher stor eiglass, the displaced vr, waves of grace, the voodoo healer, take flight vr, the source vr, my mother’s wing, snl 40 - seinfeld q&a, virtual giving trip, smile more: the journey of a song, vice news vr, new wave vr, cold lairs, kaa jungle, through mowgli eyes, trust in me, king kong helicopter crash, pete dragon 360, rogue one recon";
+    static final String s2D360FileName = "dear angelica, rain and shine, planet of the couches, buggy night, on ice, special delivery, dreams of dalí, henry vr, henry oculus, lost vr, lost oculus, google spotlight story, google pearl, google help, hunting of the fallen vr, the jfk assassination vr, scuba diving 360 green island taiwan, the room vr horror, angel falls 360, chrysalis hp, rally 360, ships factions new eden, virtually inside tanks, elephants on the brink, from pencil to metal, japan changing grow old, 360 autzen player experience, grand canyon vr, grand canyon 360, experience blue angels 360";
 
     static List<String> mTopBottom360BrandList = new ArrayList<>();
     static List<String> mLeftRight180BrandList = new ArrayList<>();
@@ -53,7 +54,7 @@ public class RecoginitonUtil {
             return getFileTypeByCode(-1);
         }
 
-//        fileName = fileName.toLowerCase(Locale.ENGLISH);
+        fileName = fileName.toLowerCase(Locale.ENGLISH);
 
         // TODO 播放格式识别
         type = checkPlayFormatByFied(fileName);
@@ -220,25 +221,26 @@ public class RecoginitonUtil {
     private static FileType checkPlayFormatByFied(String fileName) {
 
         FileType type = new FileType();
+        fileName += "_";
 
-        if (fileName.contains("3dh") || (fileName+"_").matches(".*[^a-z^A-Z]LR[^a-z^A-Z].*")
-                || fileName.contains("SBS") || fileName.contains("HSBS")) {
+        if (fileName.contains("3dh") || fileName.matches(".*[^a-z^A-Z]lr[^a-z^A-Z].*")
+                || fileName.contains("sbs") || fileName.contains("hsbs")) {
             type.setMode(mlr);
-        } else if(fileName.matches(".+Left.{0,1}Right.+") || fileName.matches(".+Side.{0,1}By.{0,1}Side.+")
-                || fileName.matches(".+Half.{0,1}Side.{0,1}By.{0,1}Side.+")) {
+        } else if(fileName.matches(".*left.{0,1}right.*") || fileName.matches(".*side.{0,1}by.{0,1}side.*")
+                || fileName.matches(".*half.{0,1}side.{0,1}by.{0,1}side.*")) {
             type.setMode(mlr);
         }
 
-        if (fileName.contains("3dv") || (fileName+"_").matches(".*[^a-z^A-Z]TB[^a-z^A-Z].*")
-                || (fileName+"_").contains(".*[^a-z^A-Z]OU[^a-z^A-Z].*")
-                || (fileName+"_").contains(".*[^a-z^A-Z]HOU[^a-z^A-Z].*")) {
+        if (fileName.contains("3dv") || fileName.matches(".*[^a-z^A-Z]tb[^a-z^A-Z].*")
+                || fileName.matches(".*[^a-z^A-Z]ou[^a-z^A-Z].*")
+                || fileName.matches(".*[^a-z^A-Z]hou[^a-z^A-Z].*")) {
             if (type.getMode() == mlr) {
                 type.setMode(-1);
             } else {
                 type.setMode(mtb);
             }
-        } else if (fileName.matches(".+Top.{0,1}Bottom.+") || fileName.matches(".+Over.{0,1}Under.+")
-                || fileName.matches(".+Half.{0,1}Over.{0,1}Under.+")) {
+        } else if (fileName.matches(".*top.{0,1}bottom.*") || fileName.matches(".*over.{0,1}under.*")
+                || fileName.matches(".*half.{0,1}over.{0,1}under.*")) {
             if (type.getMode() == mlr) {
                 type.setMode(-1);
             } else {
@@ -249,7 +251,7 @@ public class RecoginitonUtil {
         if (fileName.contains("180x180") || fileName.contains("180°")) {
             type.setView(v180);
         } else if (fileName.contains("180")
-                && (fileName.contains("VR") || fileName.matches(".+Virtual.{0,1}Reality.+"))) {
+                && (fileName.contains("vr") || fileName.matches(".*virtual.{0,1}reality.*"))) {
             type.setView(v180);
         }
 
@@ -260,7 +262,7 @@ public class RecoginitonUtil {
                 type.setView(v360);
             }
         } else if (fileName.contains("360")
-                && (fileName.contains("VR") || fileName.matches(".+Virtual.{0,1}Reality.+"))) {
+                && (fileName.contains("vr") || fileName.matches(".+virtual.{0,1}reality.+"))) {
             if (type.getView() == v180) {
                 type.setView(-1);
             } else {

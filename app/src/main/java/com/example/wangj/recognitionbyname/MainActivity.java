@@ -1,12 +1,21 @@
 package com.example.wangj.recognitionbyname;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,6 +31,15 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import android.support.v7.app.AppCompatActivity;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
+
+import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mFileName;
@@ -31,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> errorRecognitionMap = new HashMap<>();
     private final String mReadFilePath = Environment.getExternalStorageDirectory() + "/RecognitionByName.txt";
     private final String mOutFilePath = Environment.getExternalStorageDirectory() + "/log.txt";
+    private String mUri = Environment.getExternalStorageDirectory() + "/tbs/LadyBug 5.mp4;" +
+            "";
+    private String mTestVideoPath = Environment.getExternalStorageDirectory() + "/tbs/";
+
 
     private boolean allPermissionsGranted = false;
     private static final int RC_ASK_PERMISSION = 778;
@@ -42,9 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
     private long mStartTime;
     private long mFinishTime;
-    private long mStartTimeSingle;
-    private long mFinishTimeSigle;
 
+    String [] METADATA_KEYS = {"stereo_mode","stereo_mode","st3d","spherical", "stitched", "stitching_software", "projection_type", "stereo mode"
+            , "album", "album_artist", "artist", "comment", "composer", "copyright", "creation_time", "date", "disc", "encoder"
+            , "encoded_by", "filename", "genre", "language", "performer", "publisher", "service_name", "service_provider", "title", "filesize"
+            , "chapter_count", "track", "bitrate", "duration", "audio_codec", "video_codec", "rotate", "icy_metadata", "icy_artist", "icy_title"
+            , "framerate", "chapter_start_time", "chapter_end_time"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +84,83 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
         }
 
-//        String spec = ".*[^a-z^A-Z]OU[^a-z^A-Z].*";
-//
-//        String str1 = "asdsadas_OU_";
-//        String str2 = "As-OU_";
-//        String str3 = "A.OU@I_";
-//        String str4 = "O UI_";
-//        String str5 = "EEEEEOUIOOOO_";
-//
-//        showToast(""+str1.matches(spec)+str2.matches(spec)+str3.matches(spec)+str4.matches(spec)+str5.matches(spec));
+    }
 
+    public void getMetadataInfo(View view) throws ImageProcessingException, IOException {
+//        FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
+////        File file = new File(mUri);
+////        Uri uri = getImageContentUri(MainActivity.this, file);
+//        try {
+////            String filePath = uri.getEncodedPath();
+////            String filePath = uri.getPath();
+////            showToast(filePath + "<<<<<<");
+//            String str = "NULL + \n";
+//            if (!TextUtils.isEmpty(mUri)) {
+//                mmr.setDataSource(mUri);
+////                showToast(mUri);
+//                int count =0;
+//                for (int i=0; i < METADATA_KEYS.length; i++) {
+//                    String notation = mmr.extractMetadata(METADATA_KEYS[i]);
+//                    str += METADATA_KEYS[i] + "  :  " +notation + "\n";
+//                    count++;
+//                }
+//
+//                str += "\n\n\n\n------------------------------------\n";
+//                FFmpegMediaMetadataRetriever.Metadata metadata = mmr.getMetadata();
+//                HashMap<String, String> all = metadata.getAll();
+//                Iterator<Map.Entry<String, String>> iterator = all.entrySet().iterator();
+//                while (iterator.hasNext()) {
+//                    Map.Entry entry = (Map.Entry) iterator.next();
+//                    Object key = entry.getKey();
+//                    Object value = entry.getValue();
+//                    str += key + ":" + value + "\n";
+//                }
+//
+//                mFileNameList.setText(str);
+//            }
+//        } catch (Exception e) {
+//            String name = "load rotation Exception: "+mUri;
+//            Log.d("wj", e.getMessage());
+//            showToast(e.toString());
+//        } finally {
+//            mmr.release();
+//        }
+
+
+        File file = new File(mUri);
+        Metadata metadata = ImageMetadataReader.readMetadata(file);
+        String str = "NULL + \n";
+        for (Directory directory : metadata.getDirectories()) {
+            for (Tag tag : directory.getTags()) {
+                str += tag + "\n";
+                Log.d("wj", " " + tag);
+            }
+        }
+        mFileNameList.setText(str);
+    }
+
+    public static Uri getImageContentUri(Context context, java.io.File file) {
+        String filePath = file.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Video.Media._ID },
+                MediaStore.Video.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/video/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (file.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Video.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
     }
 
     public void startRecognitionByName (View view) {
@@ -157,6 +249,37 @@ public class MainActivity extends AppCompatActivity {
 
         mStartButton.setText("Start : time = "+ (mFinishTime-mStartTime));
         mFileNameList.setText(result);
+    }
+    public Uri LocationToUri(String location) {
+        Uri uri = Uri.parse(location);
+        if (uri.getScheme() == null)
+            throw new IllegalArgumentException("location has no scheme");
+        return uri;
+    }
+
+
+    public String getFilePath(Uri uri) {
+
+        String fileURI = uri.toString();
+        showToast(fileURI+"?");
+        if (TextUtils.isEmpty(fileURI)) {
+            showToast(fileURI+"isEmpty");
+            return null;
+        }
+        if (!fileURI.contains("file://")) {
+            showToast(fileURI+"!fileURI.contains");
+            return null;
+        }
+
+        // This uri string was encoded, need to decode.
+        fileURI = Uri.decode(fileURI);
+        File sourceFile = new File(fileURI.replace("file://", ""));
+        showToast(" sourceFile.exists() = "+sourceFile.exists());
+        if (!sourceFile.exists()) {
+            return null;
+        }
+
+        return sourceFile.getAbsolutePath();
     }
 
     private void showToast (String str) {

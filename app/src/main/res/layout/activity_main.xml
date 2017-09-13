@@ -18,24 +18,42 @@
         android:text="RecognitionByName.txt"
         />
 
-    <Button
-        android:id="@+id/start_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="startRecognitionByName"
-        android:background="#FF6371BA"
-        android:text="Start"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FF6371BA"
+            android:onClick="startRecognitionByName"
+            android:text="Start"/>
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/meta_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FF8871BA"
+            android:onClick="getMetadataInfo"
+            android:text="metadata_demo"/>
+
+    </LinearLayout>
+
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="\n filename     :        recogniton type \n _____________________________________________"
-        />
+        android:text="\n filename     :        recogniton type \n _____________________________________________"/>
+
     <TextView
         android:id="@+id/filename_list_text"
         android:layout_width="match_parent"
-        android:layout_height="506dp"
-        android:layout_weight="0.07"
+        android:layout_height="match_parent"
         android:maxLines="50"
         android:scrollbars="vertical"
         android:text="\n\nclick start button to recognition!"
