@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -37,8 +38,6 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
-
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,9 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> errorRecognitionMap = new HashMap<>();
     private final String mReadFilePath = Environment.getExternalStorageDirectory() + "/RecognitionByName.txt";
     private final String mOutFilePath = Environment.getExternalStorageDirectory() + "/log.txt";
-    private String mUri = Environment.getExternalStorageDirectory() + "/tbs/LadyBug 5.mp4;" +
-            "";
-    private String mTestVideoPath = Environment.getExternalStorageDirectory() + "/tbs/";
+    private String mUri = Environment.getExternalStorageDirectory() + "/tbs/bana007-009-pr-PR_injected.mp4";
+    private String mTestVideoPath = Environment.getExternalStorageDirectory() + "/nikon-d90-audi.jpg";
 
 
     private boolean allPermissionsGranted = false;
@@ -127,16 +125,41 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
 
+
+//        File file = new File(mUri);
+//        Metadata metadata = ImageMetadataReader.readMetadata(file);
+
+//        String str = "NULL + \n";
+//        for (Directory directory : metadata.getDirectories()) {
+//            for (Tag tag : directory.getTags()) {
+//                str += tag + "\n";
+//                Log.d("wj", " " + tag);
+//            }
+//        }
+//        mFileNameList.setText(str);
+
         File file = new File(mUri);
-        Metadata metadata = ImageMetadataReader.readMetadata(file);
-        String str = "NULL + \n";
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                str += tag + "\n";
-                Log.d("wj", " " + tag);
-            }
-        }
-        mFileNameList.setText(str);
+
+        ExifTool tool = new ExifTool();
+
+//        ExifTool tool = new ExifTool();
+        Map<ExifTool.Tag, String> valueMap =
+                tool.getImageMeta(file, ExifTool.Tag.IMAGE_HEIGHT, ExifTool.Tag.IMAGE_WIDTH);
+
+        System.out.println("Lat: " + valueMap.get(ExifTool.Tag.IMAGE_HEIGHT) +
+                ", Long: " + valueMap.get(ExifTool.Tag.IMAGE_WIDTH));
+
+
+//        try {
+//            //android读取图片EXIF信息
+//            ExifInterface exifInterface=new ExifInterface(mUri);
+//            String smodel=exifInterface.getAttribute("StereoMode");
+//            String width=exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+//            String height=exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+//            Toast.makeText(MainActivity.this, smodel+"  "+width+"*"+height, Toast.LENGTH_LONG).show();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static Uri getImageContentUri(Context context, java.io.File file) {

@@ -15,6 +15,8 @@
  */
 package com.example.wangj.recognitionbyname;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -512,6 +514,7 @@ public class ExifTool {
 		Process proc = null;
 		IOStream streams = null;
 
+		Log.d("wj","Attempting to start external ExifTool process using args: "+args);
 		log("\tAttempting to start external ExifTool process using args: %s",
 				args);
 
